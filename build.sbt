@@ -8,23 +8,24 @@ scalaVersion := "2.11.7"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
+
 libraryDependencies ++= {
-  val akkaV       = "2.4.2"
+  val akkaV       = "2.4.+"
   val akkaStreamV = "2.0.3"
   Seq(
-    "com.typesafe.akka" %% "akka-actor"                           % akkaV,
-    "com.typesafe.akka" %% "akka-stream-experimental"             % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-core-experimental"          % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-experimental"               % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-spray-json-experimental"    % akkaStreamV,
-    "com.typesafe.akka" %% "akka-http-testkit-experimental"       % akkaStreamV,
-
+    "com.typesafe.akka" % "akka-actor_2.11" % akkaV,
+    "com.typesafe.akka" % "akka-stream-experimental_2.11" % akkaStreamV,
+    "com.typesafe.akka" % "akka-http-core-experimental_2.11" % akkaStreamV,
+    "com.typesafe.akka" % "akka-http-experimental_2.11" % akkaStreamV,
+    "com.typesafe.akka" % "akka-http-spray-json-experimental_2.11" % akkaStreamV,
+    "com.typesafe.akka" % "akka-http-testkit-experimental_2.11" % akkaStreamV,
     "org.specs2" % "specs2_2.11" % "3.7" % "test",
-
     "com.github.seratch" %% "awscala" % "0.5.+",
+    "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
     "commons-configuration" % "commons-configuration" % "1.10"
   )
 }
+
 
 Revolver.settings
 
