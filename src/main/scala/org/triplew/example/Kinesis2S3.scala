@@ -16,10 +16,10 @@ import com.amazonaws.services.kinesis.clientlibrary.types.{UserRecord, ShutdownR
 import com.amazonaws.services.kinesis.model.Record
 
 
-object Kinesis2S3 {
+object Kinesis2S3 extends S3Writer {
 
-  val kinesisEndPoint = System.getProperty("kinesisEndpoint")
-  val dynamoEndPoint = System.getProperty("dynamoEndpoint")
+  val kinesisEndPoint = System.getProperty("kinesis.endpoint")
+  val dynamoEndPoint = System.getProperty("dynamodb.endpoint")
 
   val accessKeyId = System.getProperty("accessKeyId")
   val secretAccessKey = System.getProperty("secretAccessKey")
@@ -71,6 +71,7 @@ object Kinesis2S3 {
       records foreach { r =>
         val line = new String(r.getData.array)
         println(s"[stream-tail] $line")
+        write(line)
       }
     }
   }
