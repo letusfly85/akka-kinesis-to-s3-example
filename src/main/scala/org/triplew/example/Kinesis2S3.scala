@@ -18,43 +18,37 @@ import com.amazonaws.services.kinesis.model.Record
 
 object Kinesis2S3 extends S3Writer {
 
-  val kinesisEndPoint = System.getProperty("kinesis.endpoint")
   val dynamoEndPoint = System.getProperty("dynamodb.endpoint")
-
-  val accessKeyId = System.getProperty("accessKeyId")
-  val secretAccessKey = System.getProperty("secretAccessKey")
+  val kinesisEndPoint = System.getProperty("kinesis.endpoint")
 
   val appName = "kinesis-test-app"
-  val streamName = System.getProperty("streamName")
+  val streamName = System.getProperty("kinesis.streamName")
 
   val initialPosition = "LATEST"
   val region = "us-east-1"
   val idleTimeBetweenReadsInMillis = 3000
 
   def main(args: Array[String]): Unit = {
-    val workerId = InetAddress.getLocalHost.getCanonicalHostName + ":" + UUID.randomUUID
+    //val workerId = InetAddress.getLocalHost.getCanonicalHostName + ":" + UUID.randomUUID
+    val workerId = "localhost:" + UUID.randomUUID
     val credentialsProvider = new DefaultAWSCredentialsProviderChain
 
     val dynamoDBClient: AmazonDynamoDB = new AmazonDynamoDBClient(new ProfileCredentialsProvider())
     dynamoDBClient.setEndpoint(dynamoEndPoint)
 
-    //todo
-    val cloudWatch = new AmazonCloudWatchClient()
-
     val kclConf = new KinesisClientLibConfiguration(appName, streamName, credentialsProvider, workerId)
       .withInitialPositionInStream(InitialPositionInStream.valueOf(initialPosition))
       .withKinesisEndpoint(kinesisEndPoint)
       .withIdleTimeBetweenReadsInMillis(idleTimeBetweenReadsInMillis)
+      .withMetricsLevel("NONE")
 
     val kinesisClient = new AmazonKinesisClient(new ProfileCredentialsProvider())
     kinesisClient.setEndpoint(kinesisEndPoint)
 
+    val cloudWatch = new AmazonCloudWatchClient()
     val worker = new Worker(StreamTailProcessor.processorFactory,kclConf, kinesisClient, dynamoDBClient, cloudWatch)
-    println(kclConf.getKinesisClientConfiguration.toString)
-    println(kclConf.getDynamoDBClientConfiguration.toString)
     println(s"worker start. name:$appName stream:$streamName workerId:$workerId")
     worker.run()
-
   }
 
   class StreamTailProcessor extends IRecordProcessor{
