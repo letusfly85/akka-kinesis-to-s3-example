@@ -16,7 +16,7 @@ trait S3Writer {
   val buckets: Seq[Bucket] = s3.buckets
   val optBucket: Option[Bucket] = s3.bucket(bucketName)
 
-  def write(input: String): Unit = {
+  def write(input: String): Option[S3Path] = {
     //todo add timestamp between bucketname name and uuid
     val key: String = bucketName + "/" + input.toCharArray.toList.slice(5, 41).mkString.toLowerCase
     val metadata: ObjectMetadata = new ObjectMetadata()
@@ -24,8 +24,11 @@ trait S3Writer {
     optBucket match {
       case Some(bucket) =>
         bucket.putObject(key, new ByteArrayInputStream(input.getBytes("utf-8")), metadata)
+
+        Some(S3Path(key, "success"))
       case None =>
-        println("nothing to do.")
+
+        None
     }
 
   }
