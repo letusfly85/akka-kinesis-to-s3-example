@@ -18,7 +18,10 @@ import com.amazonaws.services.kinesis.model.Record
 object Kinesis2S3 extends S3Writer {
 
   val actorSystem = ActorSystem("Kinesis2S3")
-  val actor = actorSystem.actorOf(Props[SomeCoreActor], "SomeCoreActor")
+  //val actor = actorSystem.actorOf(Props[SomeCoreActor], "SomeCoreActor")
+  val actor =
+    actorSystem.actorSelection("akka.tcp://SampleCore@127.0.0.1:2552/user/Kinesis2S3")
+  actor ! "hi"
 
   //todo separate configuration class
   val dynamoEndPoint = System.getProperty("dynamodb.endpoint")
@@ -71,7 +74,7 @@ object Kinesis2S3 extends S3Writer {
 
         //Actorに処理状況をパッシングする
         write(line) match {
-          case Some(s3path) => actor ! s3path
+          case Some(s3path) => actor ! s3path.uuid
           case None => actor ! S3Path("uuid", "error!")
         }
       }
