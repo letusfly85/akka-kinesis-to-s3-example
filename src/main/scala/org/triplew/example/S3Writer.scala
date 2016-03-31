@@ -3,8 +3,11 @@ package org.triplew.example
 
 import java.io.{ByteArrayInputStream, InputStream}
 
-import awscala._, s3._
+import awscala._
+import s3._
 import com.amazonaws.services.s3.model.ObjectMetadata
+
+import scala.util.Random
 
 trait S3Writer {
 
@@ -18,9 +21,12 @@ trait S3Writer {
 
   def write(input: String): Option[S3Path] = {
     //todo add timestamp between bucketname name and uuid
-    val key: String = bucketName + "/" + input.toCharArray.toList.slice(5, 41).mkString.toLowerCase
+    //val key: String = bucketName + "/" + input.toCharArray.toList.slice(5, 41).mkString.toLowerCase
+    val key: String = bucketName + "/store/" + Random.nextInt(100).toString + "/" + Random.nextInt(100).toString
+
     val metadata: ObjectMetadata = new ObjectMetadata()
     metadata.setContentLength(input.length.toLong)
+
     optBucket match {
       case Some(bucket) =>
         bucket.putObject(key, new ByteArrayInputStream(input.getBytes("utf-8")), metadata)

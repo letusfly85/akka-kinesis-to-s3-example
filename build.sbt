@@ -18,10 +18,10 @@ libraryDependencies ++= {
     "org.specs2" % "specs2_2.11" % "3.7" % "test",
     "com.github.seratch" %% "awscala" % "0.5.+",
     "com.amazonaws" % "amazon-kinesis-client" % "1.6.1",
+    "com.github.levkhomich" %% "akka-tracing-core" % "0.4",
     "commons-configuration" % "commons-configuration" % "1.10"
   )
 }
-
 
 Revolver.settings
 
